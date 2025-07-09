@@ -21,8 +21,8 @@ sch = schemas.BaseResponse
 @user_router.get("/fetch", response_model=sch)
 async def root_get_users(db: Session = Depends(database.get_db)):
     users = user_repo.get_all_users(db)
+    users = sorted(users, key=lambda u: u.id)
     user_list = []
-
     for u in users:
         user_data = {
             "id": u.id,
