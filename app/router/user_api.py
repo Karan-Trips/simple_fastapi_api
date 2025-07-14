@@ -21,7 +21,7 @@ sch = schemas.BaseResponse
 @user_router.get("/fetch", response_model=sch)
 async def root_get_users(db: Session = Depends(database.get_db)):
     users = user_repo.get_all_users(db)
-    users = sorted(users, key=lambda u: u.id)
+    users = sorted(users, key=lambda u: (u.id if u.id is not None else float('inf')))
     user_list = []
     for u in users:
         user_data = {
@@ -37,6 +37,21 @@ async def root_get_users(db: Session = Depends(database.get_db)):
 
     return create_success_response("User list fetched", {"users": user_list})
 
+@user_router.post("/logout")
+async def logout(
+    db: Session = Depends(database.get_db),
+    user_id: int = Depends(get_current_user)
+):
+    user = user_repo.get_user_by_id(db, user_id)
+    if not user:
+        return create_not_found_response("User not found")  
+    user.token = None
+    db.commit()
+    db.refresh(user)
+    return create_success_response("Logged out successfully", {
+        "name": user.name,
+        "email": user.email
+    })
 
 @user_router.post("/register", response_model=sch)
 async def register(
@@ -118,7 +133,11 @@ async def delete_user_by_id(
 
     deleted_user = user_repo.delete_user(db, form_data.id)
 
+    if not deleted_user:
+        return create_not_found_response("User not found")
+
     return create_success_response("User deleted successfully", {
+        
         "name": deleted_user.name,
         "email": deleted_user.email
     })

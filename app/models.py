@@ -17,6 +17,3 @@ class Todo(SQLModel, table=True):
 
     user: Optional["User"] = Relationship(back_populates="todos")
 
-    model_config = {
-        "from_attributes": True
-    }
