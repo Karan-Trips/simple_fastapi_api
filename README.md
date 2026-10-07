@@ -74,9 +74,8 @@ simple_fastapi_api/
   * **PBKDF2-HMAC-SHA256**: Human-readable passphrase-based key derivation.
   * **Cryptographic Hashes**: SHA-256, SHA-512, and HMAC-SHA256 digests.
 * 📖 **Enhanced Interactive Documentation**:
-  * **Custom Swagger UI** (`/docs`): Inter typography, dark topbar, modern HTTP method cards, and persistent Bearer token authorization.
+  * **Custom Swagger UI & Developer Portal** (`/docs`): Inter & JetBrains Mono typography, dark developer portal, modern HTTP method cards, and persistent Bearer token authorization.
   * **Scalar Modern API Reference** (`/scalar`): Ultra-modern interactive documentation with dark/light themes and multi-language code snippets.
-  * **ReDoc** (`/redoc`): Clean publication-style API reference.
 * 🔐 **Secure Authentication & RBAC**:
   * Bcrypt password hashing.
   * Signed JWT tokens with configurable expiration.
@@ -129,9 +128,8 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 * **API Root**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-* **Custom Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+* **Custom Swagger Developer Portal**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 * **Scalar API Reference**: [http://127.0.0.1:8000/scalar](http://127.0.0.1:8000/scalar)
-* **ReDoc**: [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
 * **Admin Panel**: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
 * **WebSocket Test Sender**: [http://127.0.0.1:8000/static/sender.html](http://127.0.0.1:8000/static/sender.html)
 * **WebSocket Test Receiver**: [http://127.0.0.1:8000/static/receiver.html](http://127.0.0.1:8000/static/receiver.html)
@@ -161,7 +159,7 @@ pytest -v tests/
 
 All test suites verify:
 - Clean modular architecture imports and backward compatibility adapters
-- Root and custom documentation endpoints (`/docs`, `/scalar`, `/redoc`)
+- Root and custom documentation endpoints (`/docs`, `/scalar`)
 - Full encryption / decryption and key derivation roundtrips
 - User registration, login, and encrypted Todo management
 - Authenticated WebSocket communication
@@ -181,9 +179,8 @@ The repository is pre-configured to deploy automatically to **Render** via Infra
    - **`fastapi-core-api`**: Production Dockerized FastAPI container.
 5. Click **Apply**. Once built, your API will be live at:
    - **Live Root**: `https://<your-service-name>.onrender.com/`
-   - **Live Swagger UI**: `https://<your-service-name>.onrender.com/docs`
+   - **Live Swagger Developer Portal**: `https://<your-service-name>.onrender.com/docs`
    - **Live Scalar API Reference**: `https://<your-service-name>.onrender.com/scalar`
-   - **Live ReDoc**: `https://<your-service-name>.onrender.com/redoc`
    - **Live Admin Dashboard**: `https://<your-service-name>.onrender.com/admin`
    - **Live WebSocket Sender Client**: `https://<your-service-name>.onrender.com/static/sender.html`
    - **Live WebSocket Receiver Client**: `https://<your-service-name>.onrender.com/static/receiver.html`

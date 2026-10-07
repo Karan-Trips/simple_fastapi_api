@@ -7,30 +7,34 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     # Application Metadata
-    PROJECT_NAME: str = "Simple FastAPI Core & Cryptographic API"
+    PROJECT_NAME: str = "FastAPI Core & Cryptographic Suite"
     PROJECT_VERSION: str = "2.0.0"
     PROJECT_DESCRIPTION: str = """
-# 🚀 Simple FastAPI Core & Cryptographic Suite
+<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; margin-bottom: 20px;">
+  <span style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; font-family: sans-serif;">FastAPI 0.115+</span>
+  <span style="background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; font-family: sans-serif;">AES-256 GCM AEAD</span>
+  <span style="background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.35); border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; font-family: sans-serif;">PostgreSQL / SQLModel</span>
+  <span style="background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; font-family: sans-serif;">JWT Bearer Auth</span>
+  <span style="background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.35); border-radius: 9999px; padding: 4px 12px; font-size: 0.8rem; font-weight: 700; font-family: sans-serif;">Real-time WebSockets</span>
+</div>
 
-Welcome to the upgraded **FastAPI API** with enterprise-grade security, AES-256 encryption & decryption, JWT authentication, and interactive API documentation.
-
-### ✨ Key Features
-* 🔐 **JWT Authentication & RBAC**: Bearer tokens with configurable expiration and bcrypt password hashing.
-* 🛡️ **Military-Grade Encryption**: AES-256 / Fernet symmetric encryption, AES-GCM AEAD, and PBKDF2 key derivation.
-* 📝 **Todo & Task Management**: Full CRUD with encrypted secret notes.
-* ⚡ **Real-time WebSockets**: Multi-client chat and notification broadcasting at `/ws`.
-* 📊 **Admin Dashboard**: Interactive SQLAdmin database interface at `/admin`.
-* 📖 **Dual Interactive Documentation**:
-  * **Custom Swagger UI**: [`/docs`](/docs)
-  * **Scalar Modern API Reference**: [`/scalar`](/scalar)
-  * **ReDoc Documentation**: [`/redoc`](/redoc)
+High-performance production API engineered with clean architecture, enterprise cryptographic primitives, and real-time event broadcasting.
 
 ---
-### 🔑 How to Authenticate in Swagger UI
-1. Go to the **Authentication** section below and execute `POST /login` with your credentials (or `POST /register` first).
-2. Copy the returned `access_token`.
-3. Click the **Authorize 🔓** button at the top right of this page.
-4. Enter `Bearer <your_token>` (or just paste the token in OAuth2) and click **Authorize**.
+
+### 🔑 Quick Authorization Guide
+1. **Get Token**: Open the **Authentication & Users** group below and execute `POST /auth/login` (or `/auth/register` first).
+2. **Copy Value**: Copy the `access_token` returned in the response.
+3. **Authorize**: Click the **Authorize 🔓** button at the top right, enter `Bearer <your_token>`, and click **Authorize**.
+
+---
+
+### 🌐 Quick Resources
+* ⚡ **Scalar Interactive Reference**: [`/scalar`](/scalar)
+* 📊 **SQLAdmin Dashboard**: [`/admin`](/admin)
+* 💬 **WebSocket Test Sender**: [`/static/sender.html`](/static/sender.html)
+* 📡 **WebSocket Test Receiver**: [`/static/receiver.html`](/static/receiver.html)
+* 💚 **Health Diagnostics**: [`/health`](/health)
 """
 
     # Environment

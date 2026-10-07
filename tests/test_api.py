@@ -25,18 +25,22 @@ def test_root_and_docs():
     assert data["status"] == "online"
     assert "/docs" in data["documentation"]["swagger_ui"]
     assert "/scalar" in data["documentation"]["scalar_ui"]
-    assert "/redoc" in data["documentation"]["redoc"]
+    assert "redoc" not in data["documentation"]
+
+    # Verify ReDoc is disabled (returns 404)
+    assert client.get("/redoc").status_code == 404
 
     # Health check
     health_res = client.get("/health")
     assert health_res.status_code == 200
     assert health_res.json()["status"] == "healthy"
 
-    # Swagger UI HTML with custom styling
+    # Swagger UI HTML with custom styling and developer portal
     docs_res = client.get("/docs")
     assert docs_res.status_code == 200
-    assert "Swagger UI" in docs_res.text
+    assert "Developer Portal" in docs_res.text
     assert "Inter" in docs_res.text  # Custom modern styling injected
+    assert "custom-portal-header" in docs_res.text
 
     # Scalar HTML
     scalar_res = client.get("/scalar")
