@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -12,7 +12,10 @@ class User(SQLModel, table=True):
     password: str = Field(description="Bcrypt hashed password")
     token: Optional[str] = Field(default=None, description="Active session JWT token")
     is_active: bool = Field(default=True, description="Account active status")
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="Account creation timestamp")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        description="Account creation timestamp"
+    )
 
     # Relationship to Todos
     todos: List["Todo"] = Relationship(

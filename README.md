@@ -165,3 +165,45 @@ All test suites verify:
 - Full encryption / decryption and key derivation roundtrips
 - User registration, login, and encrypted Todo management
 - Authenticated WebSocket communication
+
+---
+
+## 🚀 Live Cloud Deployment & CI/CD on Render
+
+The repository is pre-configured to deploy automatically to **Render** via Infrastructure-as-Code ([`render.yaml`](render.yaml)) and automated GitHub Actions ([`.github/workflows/ci-cd.yml`](.github/workflows/ci-cd.yml)).
+
+### 1. Initial Blueprint Setup on Render
+1. Log in to [Render Dashboard](https://dashboard.render.com).
+2. Click **New +** -> **Blueprint**.
+3. Connect your GitHub repository (`simple_fastapi_api`).
+4. Render detects [`render.yaml`](render.yaml) and provisions:
+   - **`fastapi-postgres-db`**: Free Managed PostgreSQL 16 database.
+   - **`fastapi-core-api`**: Production Dockerized FastAPI container.
+5. Click **Apply**. Once built, your API will be live at:
+   - **Live Root**: `https://<your-service-name>.onrender.com/`
+   - **Live Swagger UI**: `https://<your-service-name>.onrender.com/docs`
+   - **Live Scalar API Reference**: `https://<your-service-name>.onrender.com/scalar`
+   - **Live ReDoc**: `https://<your-service-name>.onrender.com/redoc`
+   - **Live Admin Dashboard**: `https://<your-service-name>.onrender.com/admin`
+   - **Live WebSocket Sender Client**: `https://<your-service-name>.onrender.com/static/sender.html`
+   - **Live WebSocket Receiver Client**: `https://<your-service-name>.onrender.com/static/receiver.html`
+
+### 2. Connect Continuous Deployment (CD) Webhook
+To have GitHub Actions automatically deploy whenever code is pushed:
+1. In your Render Dashboard, open your web service (`fastapi-core-api`).
+2. Go to **Settings** -> Scroll down to **Deploy Hook**.
+3. Click **Create Deploy Hook** (or copy the existing URL):
+   ```text
+   https://api.render.com/deploy/srv-xxxxxxxxxxxx?key=yyyyyyyyyy
+   ```
+4. In your GitHub repository, navigate to:
+   **Settings** ➔ **Secrets and variables** ➔ **Actions** ➔ **New repository secret**
+   - **Name**: `RENDER_DEPLOY_HOOK_URL`
+   - **Value**: *(Paste your copied Render Deploy Hook URL)*
+5. Click **Add secret**.
+
+### 3. How the Automated CI/CD Pipeline Works
+Every time you push or merge to `main` or `master`:
+1. **Stage 1 (Pytest)**: Runs tests inside GitHub Actions. If tests fail, the pipeline halts immediately.
+2. **Stage 2 (Docker Build)**: Verifies that the production Docker container builds cleanly.
+3. **Stage 3 (Render Deploy)**: Pings your Render Deploy Hook URL via `curl`, prompting Render to pull the verified code and perform a zero-downtime rolling update.

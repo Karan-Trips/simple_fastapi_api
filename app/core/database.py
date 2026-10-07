@@ -8,10 +8,32 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
-# Normalize DATABASE_URL for SQLAlchemy compatibility (e.g. Render / Heroku postgres:// fix)
-db_url = settings.DATABASE_URL
-if db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+def normalize_database_url(url: str) -> str:
+    """Normalize database URL for SQLAlchemy compatibility across drivers and cloud providers."""
+    if not url:
+        return "sqlite:///./app.db"
+
+    # Normalize Render / Heroku legacy postgres:// prefix
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+
+    # Ensure explicit DBAPI driver (psycopg2 or psycopg) to avoid dialect resolution issues
+    if url.startswith("postgresql://") and not url.startswith("postgresql+"):
+        try:
+            import psycopg2  # noqa: F401
+            url = url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        except ImportError:
+            try:
+                import psycopg  # noqa: F401
+                url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+            except ImportError:
+                pass
+
+    return url
+
+
+# Normalize DATABASE_URL for SQLAlchemy compatibility
+db_url = normalize_database_url(settings.DATABASE_URL)
 
 # Configure connect_args based on database dialect
 connect_args = {}

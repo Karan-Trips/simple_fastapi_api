@@ -83,7 +83,15 @@
 
     function connect() {
       const token = document.getElementById('token').value;
-      ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
+      if (!token) {
+        log(" Please enter your token.");
+        return;
+      }
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host || 'localhost:8000';
+      const wsUrl = `${protocol}//${host}/ws?token=${encodeURIComponent(token)}`;
+      log(` Connecting to ${wsUrl}...`);
+      ws = new WebSocket(wsUrl);
       ws.onopen = () => log(" Connected and listening for messages...");
       ws.onmessage = (event) => log("📨 " + event.data);
       ws.onerror = () => log(" WebSocket error.");

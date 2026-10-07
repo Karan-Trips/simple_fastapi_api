@@ -109,7 +109,11 @@
         return;
       }
 
-      ws = new WebSocket(`ws://localhost:8000/ws?token=${token}`);
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host || 'localhost:8000';
+      const wsUrl = `${protocol}//${host}/ws?token=${encodeURIComponent(token)}`;
+      log(` Connecting to ${wsUrl}...`);
+      ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
         log(" Connected to WebSocket.");

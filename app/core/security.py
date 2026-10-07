@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
 
 from fastapi import Depends, HTTPException, status
@@ -40,8 +40,8 @@ def create_access_token(
     """Generate a signed JWT access token with expiration."""
     to_encode = data.copy()
     expire_minutes = expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    expire = datetime.utcnow() + expire_minutes
-    to_encode.update({"exp": expire, "iat": datetime.utcnow()})
+    expire = datetime.now(timezone.utc) + expire_minutes
+    to_encode.update({"exp": expire, "iat": datetime.now(timezone.utc)})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 

@@ -54,6 +54,15 @@ Welcome to the upgraded **FastAPI API** with enterprise-grade security, AES-256 
         "Jr364QnDUZYS3xYw4sjVGB_J0a0xHXCx8F6f99R-5UU="
     )
 
+    # CORS Configuration (for live frontend / API access)
+    CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "*")
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        if not self.CORS_ORIGINS or self.CORS_ORIGINS.strip() == "*":
+            return ["*"]
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",

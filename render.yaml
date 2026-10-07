@@ -19,6 +19,8 @@ services:
         value: production
       - key: DEBUG
         value: false
+      - key: CORS_ORIGINS
+        value: "*"
       - key: SECRET_KEY
         generateValue: true
       - key: ENCRYPTION_KEY

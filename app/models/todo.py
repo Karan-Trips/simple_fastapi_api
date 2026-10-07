@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -14,7 +14,10 @@ class Todo(SQLModel, table=True):
     is_encrypted: bool = Field(default=False, description="True if task or secret_note is encrypted at rest")
     secret_note: Optional[str] = Field(default=None, description="Confidential AES-256 encrypted note")
     
-    created_at: datetime = Field(default_factory=datetime.utcnow, description="Task creation timestamp")
+    created_at: datetime = Field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        description="Task creation timestamp"
+    )
     user_id: int = Field(foreign_key="users.id", description="Owner user ID")
 
     # Relationship to User
