@@ -8,21 +8,26 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+# Normalize DATABASE_URL for SQLAlchemy compatibility (e.g. Render / Heroku postgres:// fix)
+db_url = settings.DATABASE_URL
+if db_url.startswith("postgres://"):
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
 # Configure connect_args based on database dialect
 connect_args = {}
-if settings.DATABASE_URL.startswith("sqlite"):
+if db_url.startswith("sqlite"):
     connect_args = {"check_same_thread": False}
 
 try:
     engine = create_engine(
-        settings.DATABASE_URL,
+        db_url,
         echo=False,
         connect_args=connect_args,
         pool_pre_ping=True
     )
 except Exception as e:
     logger.warning(
-        f"Failed to initialize database with {settings.DATABASE_URL}. "
+        f"Failed to initialize database with {db_url}. "
         f"Falling back to local SQLite: {e}"
     )
     engine = create_engine(

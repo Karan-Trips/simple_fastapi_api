@@ -34,4 +34,4 @@ databases:
     plan: free
     region: oregon
     databaseName: fastapi
-    user: postgres
+    user: fastapi_user
