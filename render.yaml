@@ -1,0 +1,37 @@
+# ==============================================================================
+# Render Blueprint (Infrastructure-as-Code)
+# Deploys:
+#   1. Free Managed PostgreSQL Database
+#   2. Free Docker Web Service (FastAPI)
+# ==============================================================================
+
+services:
+  # FastAPI Web Service
+  - type: web
+    name: fastapi-core-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ENCRYPTION_KEY
+        value: Jr364QnDUZYS3xYw4sjVGB_J0a0xHXCx8F6f99R-5UU=
+      - key: DATABASE_URL
+        fromDatabase:
+          name: fastapi-postgres-db
+          property: connectionString
+
+# Free Managed PostgreSQL Database
+databases:
+  - name: fastapi-postgres-db
+    plan: free
+    region: oregon
+    databaseName: fastapi
+    user: postgres

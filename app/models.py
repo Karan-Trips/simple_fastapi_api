@@ -1,19 +1,6 @@
-from sqlmodel import Relationship, SQLModel, Field
-from typing import List, Optional
+from __future__ import annotations
 
-class User(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    name: str
-    email: str
-    password: str
-    token: Optional[str] = None
-    todos: List["Todo"] = Relationship(back_populates="user")
+# Backward compatibility re-export
+from app.models import SQLModel, User, Todo
 
-class Todo(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    task: str
-    status: bool = False
-    user_id: int = Field(foreign_key="user.id")
-
-    user: Optional["User"] = Relationship(back_populates="todos")
-
+__all__ = ["SQLModel", "User", "Todo"]

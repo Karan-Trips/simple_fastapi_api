@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # ============================================================================
+  # Database Service (PostgreSQL 16)
+  # ============================================================================
+  db:
+    image: postgres:16-alpine
+    container_name: fastapi_postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: fastapi
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fastapi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app_network
+
+  # ============================================================================
+  # FastAPI Application Service
+  # ============================================================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_core_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=development
+      - DEBUG=true
+      - DATABASE_URL=postgresql+psycopg2://postgres:password123@db:5432/fastapi
+      - SECRET_KEY=7e9f78792102ff35b0243c694c5602807618e85c96e8e8c37c2e0940aa3700c4
+      - ENCRYPTION_KEY=Jr364QnDUZYS3xYw4sjVGB_J0a0xHXCx8F6f99R-5UU=
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - app_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  app_network:
+    driver: bridge

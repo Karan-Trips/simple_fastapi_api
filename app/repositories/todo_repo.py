@@ -1,49 +1,18 @@
+from __future__ import annotations
 
+# Backward compatibility repository module wrapping TodoService
+from app.services.todo_service import TodoService
 
-from sqlalchemy.orm import Session
-from app import models, schemas
+create_todo = TodoService.create_todo
+fetch_todos_by_user = TodoService.fetch_todos_by_user
+delete_todo = TodoService.delete_todo
+update_todo = TodoService.update_todo
+update_todo_status = TodoService.update_todo_status
 
-def create_todo(db: Session, user_id: int, todo_data: schemas.TodoCreate):
-    user = db.get(models.User, user_id)
-    if not user:
-        return None
-
-    todo = models.Todo(**todo_data.model_dump())
-    user.todos.append(todo)
-    db.add(user)
-    db.commit()
-    db.refresh(todo)
-    return todo
-
-def fetch_todos_by_user(db: Session, user_id: int):
-    user = db.get(models.User, user_id)
-    if not user:
-        return None
-    return user.todos
-
-def delete_todo(db: Session, user_id: int, todo_id: int):
-    todo = db.get(models.Todo, todo_id)
-    if not todo or todo.user_id != user_id:
-        return None
-    db.delete(todo)
-    db.commit()
-    return todo
-
-def update_todo(db: Session, user_id: int, todo_id: int, todo_data: schemas.TodoUpdate):
-    todo = db.get(models.Todo, todo_id)
-    if not todo or todo.user_id != user_id:
-        return None
-    todo.task = todo_data.task
-    todo.status = todo_data.status
-    db.commit()
-    db.refresh(todo)
-    return todo
-
-def update_todo_status(db: Session, user_id: int, todo_id: int, status: bool):
-    todo = db.get(models.Todo, todo_id)
-    if not todo or todo.user_id != user_id:
-        return None
-    todo.status = status
-    db.commit()
-    db.refresh(todo)
-    return todo
+__all__ = [
+    "create_todo",
+    "fetch_todos_by_user",
+    "delete_todo",
+    "update_todo",
+    "update_todo_status",
+]

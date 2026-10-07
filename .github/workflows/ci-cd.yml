@@ -1,0 +1,80 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # ============================================================================
+  # Stage 1: Automated Testing & Linting (CI)
+  # ============================================================================
+  test:
+    name: Run Automated Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest Suite
+        env:
+          DATABASE_URL: "sqlite:///./test.db"
+          SECRET_KEY: "test-secret-key-ci-pipeline-0123456789"
+          ENCRYPTION_KEY: "Jr364QnDUZYS3xYw4sjVGB_J0a0xHXCx8F6f99R-5UU="
+        run: |
+          PYTHONPATH=. pytest -v tests/
+
+  # ============================================================================
+  # Stage 2: Docker Image Build & Validation
+  # ============================================================================
+  docker-build:
+    name: Build & Verify Docker Image
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false
+          tags: simple-fastapi-api:latest
+
+  # ============================================================================
+  # Stage 3: Continuous Deployment (CD to Live Free Hosting)
+  # ============================================================================
+  deploy:
+    name: Trigger Live Deployment
+    needs: [test, docker-build]
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Webhook Deployment
+        if: env.RENDER_DEPLOY_HOOK != ''
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          echo "Triggering live deployment webhook..."
+          curl -f -X POST "$RENDER_DEPLOY_HOOK"
+          echo "Deployment triggered successfully!"

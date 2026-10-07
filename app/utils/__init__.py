@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-# Backward compatibility re-export from app.utils.response
 from app.utils.response import (
     create_response,
     create_success_response,

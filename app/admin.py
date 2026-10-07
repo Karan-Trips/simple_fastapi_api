@@ -1,10 +1,6 @@
-from piccolo_admin.endpoints import create_admin
-from starlette.applications import Starlette
+from __future__ import annotations
 
-admin_app = create_admin(
-    tables=[], 
-    site_name="My FastAPI Admin"
-)
+# Backward compatibility adapter
+from app.admin import UserAdmin, TodoAdmin, setup_admin
 
-def get_admin_app():
-    return admin_app 
+__all__ = ["UserAdmin", "TodoAdmin", "setup_admin"]
